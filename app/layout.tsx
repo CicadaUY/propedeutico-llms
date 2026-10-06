@@ -8,4 +8,4 @@ export const metadata: Metadata = {
   icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="es"><body>{children}</body></html>; }
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="es"><body suppressHydrationWarning>{children}</body></html>; }

@@ -205,6 +205,7 @@ input[type="range"] { width: 100%; accent-color: var(--mint-dark); }
 .attention-links .self i { background: var(--coral); }
 .attention-links strong { font-size: 11px; text-align: right; font-variant-numeric: tabular-nums; }
 .attention-reading { margin: 0 0 8px !important; text-align: center; color: var(--ink) !important; font-family: Georgia, serif; font-size: 18px; }
+.attention-why { margin: 20px 0 0; padding: 14px 18px; border-left: 4px solid var(--mint-dark); background: rgba(121,211,180,.1); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--ink) !important; line-height: 1.55; }
 .myth-grid { grid-template-columns: 1fr 1fr; }
 .myth-grid > div { background: #fffaf4; }
 .compare-grid { grid-template-columns: 1fr 1fr; }
