@@ -30,6 +30,8 @@ nav { display: flex; align-items: center; gap: 26px; font-size: 14px; }
 nav a { text-decoration: none; }
 nav a:hover { color: var(--mint-dark); }
 .progress-pill { border: 1px solid var(--ink); border-radius: 999px; padding: 7px 14px; font-weight: 700; }
+.reset-btn { background: none; border: none; cursor: pointer; font-size: 18px; color: var(--muted); padding: 4px 6px; border-radius: 6px; line-height: 1; transition: color .15s, background .15s; }
+.reset-btn:hover { color: var(--ink); background: rgba(19,45,53,.08); }
 
 .hero { min-height: 690px; padding: 95px clamp(24px,8vw,130px) 105px; display: grid; grid-template-columns: minmax(0,1.1fr) minmax(360px,.9fr); gap: 6vw; align-items: center; overflow: hidden; background: radial-gradient(circle at 80% 30%, rgba(121,211,180,.2), transparent 30%), var(--paper); }
 .hero-copy { max-width: 760px; }

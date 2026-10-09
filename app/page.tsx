@@ -34,7 +34,7 @@ const pipelineStages = [
   { label: "Muestreo y repetición", input: "La distribución de probabilidades", output: "Un nuevo token, que se agrega al contexto" },
 ];
 
-const shuffledPipeline = ["Atención + MLP", "Muestreo y repetición", "Texto / contexto", "Logits", "Tokens", "Softmax + temperatura", "Embeddings + posición"];
+// shuffledPipeline is computed inside the component
 
 const attentionWords = ["El", "banco", "cerró", "porque", "era", "feriado"];
 const attentionWeights: Record<string, number[]> = {
@@ -70,12 +70,14 @@ export default function Home() {
     const total = scaled.reduce((sum, value) => sum + value, 0);
     return nextTokens.map((token, index) => ({ ...token, adjusted: scaled[index] / total }));
   }, [temperature]);
+  const shuffledPipeline = useMemo(() => [...pipelineStages.map((s) => s.label)].sort(() => Math.random() - 0.5), []);
   const attentionDistribution = useMemo(() => {
     const weights = attentionWeights[focusWord];
     const total = weights.reduce((sum, value) => sum + value, 0);
     return weights.map((value) => value / total);
   }, [focusWord]);
   const toggleDone = (id: string) => setDone((current) => current.includes(id) ? current.filter((x) => x !== id) : [...current, id]);
+  const resetProgress = () => { if (confirm("¿Reiniciar todo el progreso?")) { setDone([]); setPipeline([]); setActiveStage(null); setQuiz({}); } };
   const addPipeline = (item: string) => { if (!pipeline.includes(item)) setPipeline([...pipeline, item]); };
   const pipelineCorrect = pipeline.join("|") === pipelineStages.map((stage) => stage.label).join("|");
 
@@ -83,7 +85,7 @@ export default function Home() {
     <main>
       <header className="topbar">
         <a className="brand" href="#inicio" aria-label="Volver al inicio"><span className="brand-mark">C</span><span><strong>Escuela CICADA</strong><small>Propedéutico LLM</small></span></a>
-        <nav aria-label="Navegación principal"><a href="#recorrido">Recorrido</a><a href="#codigo">Código</a><a href="#glosario">Glosario</a><span className="progress-pill">{progress}% completo</span></nav>
+        <nav aria-label="Navegación principal"><a href="#recorrido">Recorrido</a><a href="#codigo">Código</a><a href="#glosario">Glosario</a><span className="progress-pill">{progress}% completo</span><button className="reset-btn" onClick={resetProgress} aria-label="Reiniciar progreso">↺</button></nav>
       </header>
 
       <section className="hero" id="inicio">
