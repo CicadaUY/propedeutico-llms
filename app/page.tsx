@@ -15,8 +15,8 @@ const modules: Module[] = [
 ];
 
 const optionalModules: Module[] = [
-  { id: "n1", day: "A tu ritmo", week: "Base opcional", time: "30 min", title: "¿Qué es una red neuronal?", summary: "Neuronas, capas, pesos y activaciones." },
-  { id: "n2", day: "Después de n1", week: "Base opcional", time: "30 min", title: "¿Cómo aprende una red?", summary: "Error, gradiente y ajuste de parámetros." },
+  { id: "n1", day: "Bloque 1", week: "Lección 0", time: "30 min", title: "¿Qué es una red neuronal?", summary: "Neuronas, capas, pesos y activaciones." },
+  { id: "n2", day: "Bloque 2", week: "Lección 0", time: "30 min", title: "¿Cómo aprende una red?", summary: "Error, gradiente y ajuste de parámetros." },
 ];
 
 const nextTokens = [
@@ -33,8 +33,10 @@ const pipelineStages = [
   { label: "Softmax + temperatura", input: "Los logits y la temperatura elegida", output: "Una distribución de probabilidades" },
   { label: "Muestreo y repetición", input: "La distribución de probabilidades", output: "Un nuevo token, que se agrega al contexto" },
 ];
-
-// shuffledPipeline is computed inside the component
+const pipelineOptions = [
+  "Softmax + temperatura", "Tokens", "Muestreo y repetición", "Atención + MLP",
+  "Texto / contexto", "Logits", "Embeddings + posición",
+];
 
 const attentionWords = ["El", "banco", "cerró", "porque", "era", "feriado"];
 const attentionWeights: Record<string, number[]> = {
@@ -70,7 +72,6 @@ export default function Home() {
     const total = scaled.reduce((sum, value) => sum + value, 0);
     return nextTokens.map((token, index) => ({ ...token, adjusted: scaled[index] / total }));
   }, [temperature]);
-  const shuffledPipeline = useMemo(() => [...pipelineStages.map((s) => s.label)].sort(() => Math.random() - 0.5), []);
   const attentionDistribution = useMemo(() => {
     const weights = attentionWeights[focusWord];
     const total = weights.reduce((sum, value) => sum + value, 0);
@@ -84,16 +85,18 @@ export default function Home() {
   return (
     <main>
       <header className="topbar">
-        <a className="brand" href="#inicio" aria-label="Volver al inicio"><span className="brand-mark">C</span><span><strong>Escuela CICADA</strong><small>Propedéutico LLM</small></span></a>
-        <nav aria-label="Navegación principal"><a href="#recorrido">Recorrido</a><a href="#codigo">Código</a><a href="#glosario">Glosario</a><span className="progress-pill">{progress}% completo</span><button className="reset-btn" onClick={resetProgress} aria-label="Reiniciar progreso">↺</button></nav>
+        <a className="brand" href="#inicio" aria-label="Volver al inicio"><img src="./img/loco_cicada.png" alt="" /><span><strong>Propedéutico LLM</strong><small>Escuela tokenpalooza</small></span></a>
+        <nav aria-label="Navegación principal"><a href="#base-opcional">Lección 0</a><a href="#recorrido">Recorrido</a><a href="#codigo">Código</a><a href="#glosario">Glosario</a><span className="progress-pill">{progress}% completo</span><button className="reset-btn" onClick={resetProgress} aria-label="Reiniciar progreso">↺</button></nav>
       </header>
 
       <section className="hero" id="inicio">
         <div className="hero-copy">
+          <div className="program-lockup"><span>Propedéutico de</span><img src="./img/logo_tokenpalooza.png" alt="tokenpalooza" /></div>
           <p className="eyebrow">Dos semanas · menos de cinco horas</p>
           <h1>Una llegada suave al mundo de los <em>LLMs</em></h1>
           <p className="lead">Este recorrido te dará un mapa básico para aprovechar mejor la Escuela. No necesitás programar ni dominar la matemática: alcanza con curiosidad y unos pocos ratos durante las dos semanas previas.</p>
           <div className="hero-actions"><a className="button primary" href="#m1">Comenzar el recorrido <span>↓</span></a><a className="button quiet" href="#recorrido">Ver cronograma</a></div>
+          <a className="foundation-callout" href="#base-opcional"><span className="foundation-callout-number">Lección 0</span><span><strong>¿Las redes neuronales son nuevas para vos?</strong><small>Empezá por una introducción breve a redes y aprendizaje antes del recorrido.</small></span><b>Ver fundamentos ↓</b></a>
           <p className="save-note">Tu avance se guarda automáticamente en este dispositivo.</p>
         </div>
         <div className="hero-map" aria-label="Mapa conceptual del curso"><div className="orbit orbit-one"><span>tokens</span></div><div className="orbit orbit-two"><span>atención</span></div><div className="orbit orbit-three"><span>vectores</span></div><div className="core">texto<small>→</small>texto</div></div>
@@ -110,12 +113,13 @@ export default function Home() {
       </section>
 
       <section className="optional-path" id="base-opcional">
-        <div><p className="eyebrow">Antes del recorrido · opcional</p><h2>¿Las redes neuronales todavía te resultan una caja negra?</h2><p>Estos dos bloques construyen la base sobre la que funcionan los transformers. Hacelos si venís de un área alejada del aprendizaje automático; si estos conceptos ya te resultan familiares, podés ir directamente al recorrido obligatorio.</p></div>
-        <div className="optional-path-actions"><a className="button primary" href="#n1">Hacer la base opcional ↓</a><a className="button quiet" href="#m1">Ir al recorrido obligatorio</a></div>
-        <div className="optional-path-grid">{optionalModules.map((module, index) => <a href={`#${module.id}`} key={module.id}><span>0{index + 1}</span><div><small>{module.time}</small><h3>{module.title}</h3><p>{module.summary}</p></div>{done.includes(module.id) && <b>✓</b>}</a>)}</div>
+        <div><p className="eyebrow">Lección 0 · Fundamentos recomendados</p><h2>Empezá acá si las redes neuronales todavía son una caja negra.</h2><p>En dos bloques breves vas a entender qué es una red neuronal y cómo aprende. Es la mejor puerta de entrada si venís de un área alejada del aprendizaje automático. Si ya manejás estas ideas, podés pasar directamente al recorrido obligatorio.</p></div>
+        <div className="foundation-recommendation"><strong>Te la recomendamos si no tenés claro qué son las capas, los pesos, las activaciones o el gradiente.</strong><span>60 minutos en total · no cuenta en el avance obligatorio</span></div>
+        <div className="optional-path-actions"><a className="button primary" href="#n1">Empezar la Lección 0 ↓</a><a className="button quiet" href="#m1">Ya conozco estos conceptos</a></div>
+        <div className="optional-path-grid">{optionalModules.map((module, index) => <a href={`#${module.id}`} key={module.id}><span>0.{index + 1}</span><div><small>{module.time}</small><h3>{module.title}</h3><p>{module.summary}</p></div>{done.includes(module.id) && <b>✓</b>}</a>)}</div>
       </section>
 
-      <ModuleShell module={optionalModules[0]} done={done.includes("n1")} onDone={() => toggleDone("n1")} optional optionalLabel="Base opcional">
+      <ModuleShell module={optionalModules[0]} done={done.includes("n1")} onDone={() => toggleDone("n1")} optional optionalLabel="Fundamento recomendado">
         <Prompt>Antes de mirar</Prompt><h3>Una red neuronal no es una pequeña réplica del cerebro.</h3><p className="module-intro">Pensala como una función con muchos valores ajustables. Recibe números, los transforma capa por capa y produce otros números.</p>
         <Video id="aircAruvnKk" title="But what is a neural network? | Deep Learning Chapter 1" label="Fundamento opcional" />
         <Prompt>Seguí la señal</Prompt>
@@ -124,7 +128,7 @@ export default function Home() {
         <Takeaway>Una red neuronal es una función parametrizada, organizada en capas, que aprende transformaciones útiles a partir de datos.</Takeaway>
       </ModuleShell>
 
-      <ModuleShell module={optionalModules[1]} done={done.includes("n2")} onDone={() => toggleDone("n2")} optional optionalLabel="Base opcional">
+      <ModuleShell module={optionalModules[1]} done={done.includes("n2")} onDone={() => toggleDone("n2")} optional optionalLabel="Fundamento recomendado">
         <Prompt>Pregunta guía</Prompt><h3>Si una red se equivoca, ¿cómo sabe qué parámetros cambiar?</h3><p className="module-intro">Necesita una medida del error y una dirección que indique qué pequeños cambios lo reducen.</p>
         <Video id="IHZwWFHWa-w" title="Gradient descent, how neural networks learn | Deep Learning Chapter 2" label="Fundamento opcional" />
         <Prompt>El ciclo de aprendizaje</Prompt>
@@ -137,7 +141,7 @@ export default function Home() {
         <Prompt>Antes de mirar</Prompt><h3>Terminá mentalmente esta oración:</h3><blockquote>"Un modelo de lenguaje intenta predecir…"</blockquote>
         <Video id="LPZh9BOjkQs" title="Large Language Models explained briefly" />
         <Prompt>Probalo</Prompt>
-        <div className="lab two-col"><div><h3>Explorá la distribución</h3><p>Imaginá que el texto termina en: <strong>"El estudio analiza cómo funciona el…"</strong></p><label className="slider-label">Temperatura <strong>{temperature.toFixed(1)}</strong></label><input type="range" min="0.1" max="2" step="0.1" value={temperature} onChange={(e) => setTemperature(Number(e.target.value))} /><div className="temperature-scale"><span>más determinista</span><span>más diversa</span></div><p className="hint">Aplicamos la temperatura a los mismos puntajes y volvemos a normalizar con softmax. Las probabilidades siempre suman 100%.</p></div><div className="bars" aria-label="Probabilidades simuladas para el próximo token">{temperatureDistribution.map((t, i) => <div className="bar-row" key={t.word}><span>{t.word}</span><div><i style={{ width: `${t.adjusted * 100}%`, opacity: 1 - i * .1 }} /><strong>{(t.adjusted * 100).toFixed(t.adjusted < .005 ? 2 : 1)}%</strong></div></div>)}</div></div>
+        <div className="lab two-col"><div><h3>Explorá la distribución</h3><p>Imaginá que el texto termina en: <strong>"El estudio analiza cómo funciona el…"</strong></p><label className="slider-label">Temperatura <strong>{temperature.toFixed(1)}</strong></label><input type="range" min="0.1" max="2" step="0.1" value={temperature} onChange={(e) => setTemperature(Number(e.target.value))} /><div className="temperature-scale"><span>más determinista</span><span>más diversa</span></div><p className="hint">Aplicamos la temperatura a los mismos puntajes y volvemos a normalizar con softmax. Las probabilidades siempre suman 100%.</p></div><div className="bars" aria-label="Probabilidades simuladas para el próximo token">{temperatureDistribution.map((t, i) => <div className="bar-row" key={t.word}><span>{t.word}</span><div><i style={{ width: `${(t.adjusted * 100).toFixed(4)}%`, opacity: (1 - i * .1).toFixed(1) }} /><strong>{(t.adjusted * 100).toFixed(t.adjusted < .005 ? 2 : 1)}%</strong></div></div>)}</div></div>
         <Takeaway>Un LLM asigna probabilidades a posibles continuaciones y genera texto repitiendo esa predicción token a token.</Takeaway>
         <RetrievalCheck>
           <QuizQuestion id="r1_q1" value={quiz.r1_q1} setQuiz={setQuiz} question="Si el modelo siempre eligiera el token más probable, ¿qué problema tendría?" options={["Generaría respuestas más rápido", "Tendería a repetirse y perdería variedad", "No podría usar embeddings"]} correct="Tendería a repetirse y perdería variedad" />
@@ -146,7 +150,7 @@ export default function Home() {
       </ModuleShell>
 
       <ModuleShell module={modules[1]} done={done.includes("m2")} onDone={() => toggleDone("m2")}>
-        <Prompt>Explorá</Prompt><div className="lab"><div className="lab-title-row"><div><h3>Antes de entrar al transformer, el texto se parte</h3><p>Este sí es un tokenizador BPE real: usa la codificación <strong>o200k_base de GPT-4o</strong>. Probá palabras frecuentes, largas, inventadas, con tildes o en otros idiomas.</p></div><span className="real-badge">Tokenización real</span></div><input className="text-input" value={tokenText} onChange={(e) => setTokenText(e.target.value)} aria-label="Texto para separar en tokens" /><div className="token-summary"><strong>{tokens.length}</strong> tokens <span>· representa un espacio inicial</span></div><div className="tokens" aria-live="polite">{tokens.map((token, i) => <span key={`${token.id}-${i}`} title={`ID ${token.id}`}><b>{token.text || "∅"}</b><small>#{token.id}</small></span>)}</div><p className="hint">La partición depende del vocabulario de cada modelo: otros LLMs pueden tokenizar el mismo texto de otra manera.</p></div>
+        <Prompt>Explorá</Prompt><div className="lab"><div className="lab-title-row"><div><h3>Antes de entrar al transformer, el texto se parte</h3><p>Este es un tokenizador BPE real: usa la codificación <strong>o200k_base de GPT-4o</strong>. Probá palabras frecuentes, largas, inventadas, con tildes o en otros idiomas.</p></div><span className="real-badge">Tokenización real</span></div><input className="text-input" value={tokenText} onChange={(e) => setTokenText(e.target.value)} aria-label="Texto para separar en tokens" /><div className="token-summary"><strong>{tokens.length}</strong> tokens <span>· representa un espacio inicial</span></div><div className="tokens" aria-live="polite">{tokens.map((token, i) => <span key={`${token.id}-${i}`} title={`ID ${token.id}`}><b>{token.text || "∅"}</b><small>#{token.id}</small></span>)}</div><p className="hint">La partición depende del vocabulario de cada modelo: otros LLMs pueden tokenizar el mismo texto de otra manera.</p></div>
         <Video id="wjZofJX0v4M" title="Transformers, the tech behind LLMs" />
         <div className="pause-card"><strong>Mientras mirás</strong><p>No intentes retener cada dimensión o número. Seguí tres transformaciones: texto → tokens; tokens → vectores; vectores → representaciones que cambian con el contexto.</p></div>
         <Takeaway>Los tokens se representan como vectores. Esas representaciones contienen relaciones aprendidas y se enriquecen con posición y contexto.</Takeaway>
@@ -157,7 +161,7 @@ export default function Home() {
       </ModuleShell>
 
       <ModuleShell module={modules[2]} done={done.includes("m3")} onDone={() => toggleDone("m3")}>
-        <Prompt>Reconstruí el camino</Prompt><div className="lab"><h3>¿En qué orden viaja el texto?</h3><p>Seleccioná las siete etapas. Después podés abrir cada una para ver exactamente qué entra y qué sale.</p><div className="pipeline-options">{shuffledPipeline.map((x) => <button key={x} disabled={pipeline.includes(x)} onClick={() => addPipeline(x)}>{x}</button>)}</div><div className="pipeline-result">{pipeline.length ? pipeline.map((x, i) => <button className={activeStage === x ? "active" : ""} onClick={() => setActiveStage(x)} key={x}>{x}{i < pipeline.length - 1 && <b>→</b>}</button>) : <em>Tu secuencia aparecerá aquí</em>}</div>{pipeline.length === pipelineStages.length && (() => {
+        <Prompt>Reconstruí el camino</Prompt><div className="lab"><h3>¿En qué orden viaja el texto?</h3><p>Seleccioná las siete etapas. Después podés abrir cada una para ver exactamente qué entra y qué sale.</p><div className="pipeline-options">{pipelineOptions.map((x) => <button key={x} disabled={pipeline.includes(x)} onClick={() => addPipeline(x)}>{x}</button>)}</div><div className="pipeline-result">{pipeline.length ? pipeline.map((x, i) => <button className={activeStage === x ? "active" : ""} onClick={() => setActiveStage(x)} key={x}>{x}{i < pipeline.length - 1 && <b>→</b>}</button>) : <em>Tu secuencia aparecerá aquí</em>}</div>{pipeline.length === pipelineStages.length && (() => {
                   if (pipelineCorrect) return <p className="feedback good">Exacto: ahora abrí cada etapa para seguir la transformación.</p>;
                   const firstWrong = pipeline.findIndex((item, i) => pipelineStages[i].label !== item);
                   if (firstWrong === 0) return <p className="feedback bad">La primera etapa no es la correcta. La secuencia arranca desde el texto/contexto.</p>;
@@ -209,13 +213,13 @@ export default function Home() {
       </section>
 
       <section className="glossary" id="glosario"><div className="section-heading"><div><p className="eyebrow">Para volver cuando quieras</p><h2>Glosario mínimo</h2></div></div><dl><div><dt>Token</dt><dd>Unidad de texto que el modelo procesa: puede ser una palabra, parte de una palabra o un signo.</dd></div><div><dt>Embedding</dt><dd>Vector numérico que representa un token u otra unidad en un espacio aprendido.</dd></div><div><dt>Atención</dt><dd>Mecanismo que combina información de distintos tokens según su relevancia contextual.</dd></div><div><dt>Parámetro</dt><dd>Valor numérico ajustado durante el entrenamiento que contribuye al comportamiento del modelo.</dd></div><div><dt>Pretraining</dt><dd>Entrenamiento inicial, generalmente mediante predicción sobre grandes colecciones de texto.</dd></div><div><dt>Inferencia</dt><dd>Uso del modelo ya entrenado para producir predicciones o generar una respuesta.</dd></div><div><dt>Temperatura</dt><dd>Control sobre cuán concentrado o diverso es el muestreo de la siguiente salida.</dd></div><div><dt>Alucinación</dt><dd>Generación de contenido plausible en su forma, pero incorrecto o no sustentado.</dd></div></dl></section>
-      <footer><div><span className="brand-mark">C</span><p><strong>Escuela CICADA</strong><br />Propedéutico sobre modelos de lenguaje</p></div><a href="#inicio">Volver arriba ↑</a></footer>
+      <footer><div className="footer-identity"><img className="footer-tokenpalooza" src="./img/logo_tokenpalooza.png" alt="tokenpalooza" /><span>una escuela de</span><a href="https://www.cicada.uy/" target="_blank" rel="noreferrer" aria-label="Visitar el sitio de CICADA"><img className="footer-cicada" src="./img/loco_cicada.png" alt="CICADA" /></a><p>Propedéutico sobre modelos de lenguaje</p></div><div className="footer-links"><a href="https://www.cicada.uy/" target="_blank" rel="noreferrer">cicada.uy ↗</a><a href="#inicio">Volver arriba ↑</a></div></footer>
     </main>
   );
 }
 
 function ModuleShell({ module, done, onDone, optional = false, optionalLabel = "Profundización", children }: { module: Module; done: boolean; onDone: () => void; optional?: boolean; optionalLabel?: string; children: React.ReactNode }) {
-  return <section className={`module ${optionalLabel === "Base opcional" ? "foundation-module" : ""}`} id={module.id}><div className="module-header"><div><p className="eyebrow">{module.week} · {module.day} · {module.time}</p><h2>{module.title}</h2><p>{module.summary}</p></div>{optional && <span className="optional">{optionalLabel}</span>}</div><div className="module-body">{children}</div><button className={`complete-button ${done ? "checked" : ""}`} onClick={onDone}><span>{done ? "✓" : ""}</span>{done ? "Módulo completado" : "Marcar como completado"}</button></section>;
+  return <section className={`module ${module.week === "Lección 0" ? "foundation-module" : ""}`} id={module.id}><div className="module-header"><div><p className="eyebrow">{module.week} · {module.day} · {module.time}</p><h2>{module.title}</h2><p>{module.summary}</p></div>{optional && <span className="optional">{optionalLabel}</span>}</div><div className="module-body">{children}</div><button className={`complete-button ${done ? "checked" : ""}`} onClick={onDone}><span>{done ? "✓" : ""}</span>{done ? "Módulo completado" : "Marcar como completado"}</button></section>;
 }
 
 function Video({ id, title, label = "Video central" }: { id: string; title: string; label?: string }) { return <div className="video-block"><div className="video-label"><span>▶</span><div><small>{label}</small><strong>{title}</strong></div></div><div className="video-frame"><iframe src={`https://www.youtube-nocookie.com/embed/${id}?rel=0`} title={title} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div><a href={`https://www.youtube.com/watch?v=${id}`} target="_blank" rel="noreferrer">Abrir en YouTube ↗</a></div>; }
